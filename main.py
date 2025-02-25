@@ -108,7 +108,8 @@ def main():
     if buses_to_work.empty:
         st.info("No upcoming buses available.")
     else:
-        st.table(buses_to_work[["Route", "Departure Time", "Time Left"]])
+        # Convert to dictionary format without index
+        st.table(buses_to_work[["Route", "Departure Time", "Time Left"]].reset_index(drop=True).to_dict(orient="records"))
 
     st.markdown("<br><hr><br>", unsafe_allow_html=True)  # Spacer for separation
 
@@ -118,7 +119,8 @@ def main():
     if buses_to_palo_alto.empty:
         st.info("No upcoming buses available.")
     else:
-        st.table(buses_to_palo_alto[["Route", "Departure Time", "Time Left"]])
+        # Convert to dictionary format without index
+        st.table(buses_to_palo_alto[["Route", "Departure Time", "Time Left"]].reset_index(drop=True).to_dict(orient="records"))
 
     st.markdown("<br><hr><br>", unsafe_allow_html=True)  # Spacer for separation
 
@@ -128,7 +130,8 @@ def main():
     if last_bus is None:
         st.info("No past buses available yet.")
     else:
-        st.table(last_bus[["Route", "Departure Time", "Time Left"]])
+        # Convert to dictionary format without index
+        st.table(last_bus[["Route", "Departure Time", "Time Left"]].reset_index(drop=True).to_dict(orient="records"))
         st.warning("If you missed this bus, there are no more buses for today. 🛑")
 
 
