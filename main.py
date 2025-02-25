@@ -39,7 +39,7 @@ def time_difference(dep_time):
     minutes, seconds = divmod(time_diff.seconds, 60)  # Convert to minutes and seconds
 
     # If the time difference is greater than 2 hours, format as "X hours Y minutes"
-    if time_diff.total_seconds() >= 7200:  # 2 hours = 7200 seconds
+    if time_diff.total_seconds() >= 3600:  # 2 hours = 7200 seconds
         hours, minutes = divmod(minutes, 60)  # Convert minutes to hours and remaining minutes
         return f"{hours} hours {minutes} minutes"
     else:
