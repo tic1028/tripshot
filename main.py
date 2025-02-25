@@ -1,6 +1,16 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import pytz
+
+# Set your desired time zone (e.g., Pacific Time Zone)
+TIMEZONE = "US/Pacific"
+
+
+# Function to convert time to the specified timezone
+def convert_to_timezone(dt, timezone):
+    tz = pytz.timezone(timezone)
+    return dt.astimezone(tz)
 
 
 # Load bus schedule from a local CSV file
@@ -15,9 +25,11 @@ def load_data():
 
 
 def time_difference(dep_time):
-    now = datetime.now().time()
-    now_dt = datetime.combine(datetime.today(), now)
-    dep_dt = datetime.combine(datetime.today(), dep_time)
+    now = datetime.now(pytz.timezone(TIMEZONE)).time()  # Get current time in the specified time zone
+    now_dt = datetime.combine(datetime.today(), now).replace(
+        tzinfo=pytz.timezone(TIMEZONE))  # Current time with timezone
+    dep_dt = datetime.combine(datetime.today(), dep_time).replace(
+        tzinfo=pytz.timezone(TIMEZONE))  # Departure time with timezone
 
     # If the departure time is before the current time, add one day to the departure time
     if dep_dt < now_dt:
@@ -35,7 +47,7 @@ def time_difference(dep_time):
 
 
 def get_next_buses(df, route, max_results=4):
-    now = datetime.now().time()  # Get current time
+    now = datetime.now(pytz.timezone(TIMEZONE)).time()  # Get current time in the specified time zone
     upcoming_buses = df[(df["Route"] == route) & (df["Departure Time"] > now)]
 
     # Calculate time left for each bus
@@ -45,7 +57,7 @@ def get_next_buses(df, route, max_results=4):
 
 
 def get_latest_bus(df, route):
-    now = datetime.now().time()  # Get current time
+    now = datetime.now(pytz.timezone(TIMEZONE)).time()  # Get current time in the specified time zone
     past_buses = df[(df["Route"] == route) & (df["Departure Time"] < now)]
 
     # Calculate time left for each bus (even though it will be negative, this shows how long ago the bus departed)
@@ -58,7 +70,7 @@ def get_latest_bus(df, route):
 
 def get_last_bus_from_work(df):
     """Get the last bus from Work → Palo Alto for today"""
-    now = datetime.now().time()
+    now = datetime.now(pytz.timezone(TIMEZONE)).time()
     work_to_palo_alto = df[df["Route"] == "Work → Palo Alto"]
     future_buses = work_to_palo_alto[work_to_palo_alto["Departure Time"] > now]
 
@@ -71,7 +83,6 @@ def get_last_bus_from_work(df):
     # Calculate time left for the last bus
     last_bus["Time Left"] = last_bus["Departure Time"].apply(time_difference)
     return last_bus
-
 
 
 def main():
